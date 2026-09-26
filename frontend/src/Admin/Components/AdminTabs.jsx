@@ -66,7 +66,7 @@ export default function BasicTabs({ user, setUser, getUser }) {
     }, [])
     const getProductInfo = async () => {
         try {
-            const chartUrl = process.env.REACT_APP_ADMIN_GET_CHART_DATA || 'http://localhost:5000/api/admin/getchartdata';
+            const chartUrl = process.env.REACT_APP_ADMIN_GET_CHART_DATA || '/api/admin/getchartdata';
             const { data } = await axios.get(chartUrl);
             if (data) {
                 setProducts(data.product || []);
@@ -82,7 +82,7 @@ export default function BasicTabs({ user, setUser, getUser }) {
 
     const getCategoryCount = async () => {
         try {
-            const url = process.env.REACT_APP_ADMIN_GET_CATEGORY || 'http://localhost:5000/api/category/fetchcategories';
+            const url = process.env.REACT_APP_ADMIN_GET_CATEGORY || '/api/category/fetchcategories';
             const { data } = await axios.get(url);
             setCategoryCount(data ? data.length : 0);
         } catch (error) {

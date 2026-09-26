@@ -39,7 +39,7 @@ const SingleProduct = () => {
 
     const fetchDbCategories = async () => {
         try {
-            const url = process.env.REACT_APP_ADMIN_GET_CATEGORY || 'http://localhost:5000/api/category/fetchcategories';
+            const url = process.env.REACT_APP_ADMIN_GET_CATEGORY || '/api/category/fetchcategories';
             const { data } = await axios.get(url);
             setDbCategories(data || []);
         } catch (err) {
@@ -83,7 +83,7 @@ const SingleProduct = () => {
 
         setUploading(true);
         try {
-            const uploadUrl = process.env.REACT_APP_UPLOAD_IMAGE || 'http://localhost:5000/api/upload/uploadimage';
+            const uploadUrl = process.env.REACT_APP_UPLOAD_IMAGE || '/api/upload/uploadimage';
             const { data } = await axios.post(uploadUrl, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
@@ -132,7 +132,7 @@ const SingleProduct = () => {
         }
 
         try {
-            const updateUrl = `${process.env.REACT_APP_ADMIN_UPDATE_PRODUCT || 'http://localhost:5000/api/admin/updateproduct'}/${id}`;
+            const updateUrl = `${process.env.REACT_APP_ADMIN_UPDATE_PRODUCT || '/api/admin/updateproduct'}/${id}`;
             
             const payload = {
                 ...productInfo,
@@ -157,7 +157,7 @@ const SingleProduct = () => {
 
     const deleteProduct = async () => {
         try {
-            const deleteUrl = `${process.env.REACT_APP_ADMIN_DELETE_PRODUCT || 'http://localhost:5000/api/admin/deleteproduct'}/${id}`;
+            const deleteUrl = `${process.env.REACT_APP_ADMIN_DELETE_PRODUCT || '/api/admin/deleteproduct'}/${id}`;
             const { data } = await axios.delete(deleteUrl, {
                 headers: { 'Authorization': authToken }
             });

@@ -78,7 +78,7 @@ const ProductTable = ({ data, getProductInfo }) => {
     const handleDeleteSubmit = async () => {
         if (!selectedProduct) return;
         try {
-            const deleteUrl = `${process.env.REACT_APP_ADMIN_DELETE_PRODUCT || 'http://localhost:5000/api/admin/deleteproduct'}/${selectedProduct._id}`;
+            const deleteUrl = `${process.env.REACT_APP_ADMIN_DELETE_PRODUCT || '/api/admin/deleteproduct'}/${selectedProduct._id}`;
             const { data } = await axios.delete(deleteUrl, {
                 headers: { 'Authorization': authToken }
             });

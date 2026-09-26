@@ -32,7 +32,7 @@ const CategoryTable = () => {
 
     const fetchCategories = async () => {
         try {
-            const url = process.env.REACT_APP_ADMIN_GET_CATEGORY || 'http://localhost:5000/api/category/fetchcategories';
+            const url = process.env.REACT_APP_ADMIN_GET_CATEGORY || '/api/category/fetchcategories';
             const { data } = await axios.get(url);
             setCategories(data || []);
         } catch (error) {
@@ -55,7 +55,7 @@ const CategoryTable = () => {
 
         setUploading(true);
         try {
-            const uploadUrl = process.env.REACT_APP_UPLOAD_IMAGE || 'http://localhost:5000/api/upload/uploadimage';
+            const uploadUrl = process.env.REACT_APP_UPLOAD_IMAGE || '/api/upload/uploadimage';
             const { data } = await axios.post(uploadUrl, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
@@ -84,7 +84,7 @@ const CategoryTable = () => {
             return;
         }
         try {
-            const addUrl = process.env.REACT_APP_ADMIN_ADD_CATEGORY || 'http://localhost:5000/api/category/addcategory';
+            const addUrl = process.env.REACT_APP_ADMIN_ADD_CATEGORY || '/api/category/addcategory';
             const { data } = await axios.post(addUrl, categoryForm, {
                 headers: { 'Authorization': authToken }
             });
@@ -115,7 +115,7 @@ const CategoryTable = () => {
     const handleEditSubmit = async (e) => {
         e.preventDefault();
         try {
-            const updateUrl = `${process.env.REACT_APP_ADMIN_UPDATE_CATEGORY || 'http://localhost:5000/api/category/updatecategory'}/${selectedCategory._id}`;
+            const updateUrl = `${process.env.REACT_APP_ADMIN_UPDATE_CATEGORY || '/api/category/updatecategory'}/${selectedCategory._id}`;
             const { data } = await axios.put(updateUrl, categoryForm, {
                 headers: { 'Authorization': authToken }
             });
@@ -137,7 +137,7 @@ const CategoryTable = () => {
 
     const handleDeleteSubmit = async () => {
         try {
-            const deleteUrl = `${process.env.REACT_APP_ADMIN_DELETE_CATEGORY || 'http://localhost:5000/api/category/deletecategory'}/${selectedCategory._id}`;
+            const deleteUrl = `${process.env.REACT_APP_ADMIN_DELETE_CATEGORY || '/api/category/deletecategory'}/${selectedCategory._id}`;
             const { data } = await axios.delete(deleteUrl, {
                 headers: { 'Authorization': authToken }
             });

@@ -40,7 +40,7 @@ const HomePage = () => {
 
     const fetchDynamicCategories = async () => {
         try {
-            const url = process.env.REACT_APP_ADMIN_GET_CATEGORY || 'http://localhost:5000/api/category/fetchcategories';
+            const url = process.env.REACT_APP_ADMIN_GET_CATEGORY || '/api/category/fetchcategories';
             const { data } = await axios.get(url);
             if (data && Array.isArray(data) && data.length > 0) {
                 setCategories(data);

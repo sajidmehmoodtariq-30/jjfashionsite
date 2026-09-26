@@ -26,7 +26,7 @@ const AdminHomePage = () => {
     const getUser = async () => {
         try {
             setLoading(true);
-            const url = process.env.REACT_APP_ADMIN_GET_ALL_USERS || 'http://localhost:5000/api/admin/getallusers';
+            const url = process.env.REACT_APP_ADMIN_GET_ALL_USERS || '/api/admin/getallusers';
             const { data } = await axios.get(url, {
                 headers: {
                     'Authorization': authToken

@@ -4,12 +4,7 @@ dotenv.config();
 function checkOrigin(req, res, next) {
     const allowedOrigins = [
         process.env.FRONTEND_URL_1,
-        process.env.FRONTEND_URL_2,
-        'http://localhost:3000',
-        'http://localhost:5173',
-        'http://localhost:5000',
-        'http://127.0.0.1:3000',
-        'http://127.0.0.1:5173'
+        process.env.FRONTEND_URL_2
     ].filter(Boolean);
 
     const origin = req.headers.origin;

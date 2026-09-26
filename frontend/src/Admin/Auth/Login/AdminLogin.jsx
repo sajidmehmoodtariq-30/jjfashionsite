@@ -28,7 +28,7 @@ const AdminLogin = () => {
       let auth = localStorage.getItem('Authorization');
       if (auth) {
         try {
-          const getUserUrl = process.env.REACT_APP_GET_USER_DETAILS || 'http://localhost:5000/api/auth/getuser';
+          const getUserUrl = process.env.REACT_APP_GET_USER_DETAILS || '/api/auth/getuser';
           const { data } = await axios.get(getUserUrl, {
             headers: { 'Authorization': auth }
           });
@@ -51,7 +51,7 @@ const AdminLogin = () => {
         return;
       }
       
-      const loginUrl = process.env.REACT_APP_ADMIN_LOGIN || 'http://localhost:5000/api/admin/login';
+      const loginUrl = process.env.REACT_APP_ADMIN_LOGIN || '/api/admin/login';
       const { data } = await axios.post(loginUrl, {
         email: credentials.email,
         password: credentials.password

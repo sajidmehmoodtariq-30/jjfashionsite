@@ -32,7 +32,7 @@ const DesktopNavigation = () => {
 
   const checkAdminStatus = async () => {
     try {
-      const url = process.env.REACT_APP_GET_USER_DETAILS || 'http://localhost:5000/api/auth/getuser';
+      const url = process.env.REACT_APP_GET_USER_DETAILS || '/api/auth/getuser';
       const { data } = await axios.get(url, {
         headers: { 'Authorization': authToken }
       });

@@ -33,7 +33,7 @@ const AddProduct = ({ getProductInfo, data }) => {
 
     const fetchDbCategories = async () => {
         try {
-            const url = process.env.REACT_APP_ADMIN_GET_CATEGORY || 'http://localhost:5000/api/category/fetchcategories';
+            const url = process.env.REACT_APP_ADMIN_GET_CATEGORY || '/api/category/fetchcategories';
             const { data } = await axios.get(url);
             setDbCategories(data || []);
         } catch (error) {
@@ -55,7 +55,7 @@ const AddProduct = ({ getProductInfo, data }) => {
 
         setUploading(true);
         try {
-            const uploadUrl = process.env.REACT_APP_UPLOAD_IMAGE || 'http://localhost:5000/api/upload/uploadimage';
+            const uploadUrl = process.env.REACT_APP_UPLOAD_IMAGE || '/api/upload/uploadimage';
             const { data } = await axios.post(uploadUrl, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
@@ -98,7 +98,7 @@ const AddProduct = ({ getProductInfo, data }) => {
                 return;
             }
 
-            const addUrl = process.env.REACT_APP_ADMIN_ADD_PRODUCT || 'http://localhost:5000/api/admin/addproduct';
+            const addUrl = process.env.REACT_APP_ADMIN_ADD_PRODUCT || '/api/admin/addproduct';
             const derivedType = productInfo.category ? productInfo.category.toLowerCase() : 'watches';
 
             const payload = {
