@@ -31,12 +31,15 @@ const SearchBar = ({ selectedCategory, onSelectCategory }) => {
             return;
         }
 
-        const newFilteredData = data.filter(item =>
+        const productList = Array.isArray(data) ? data : [];
+        const newFilteredData = productList.filter(item =>
+            item && (
             (item.name && item.name.toLowerCase().includes(val.toLowerCase())) ||
             (item.type && item.type.toLowerCase().includes(val.toLowerCase())) ||
             (item.brand && item.brand.toLowerCase().includes(val.toLowerCase())) ||
             (item.category && item.category.toLowerCase().includes(val.toLowerCase())) ||
             (item.description && item.description.toLowerCase().includes(val.toLowerCase()))
+            )
         );
         setFilteredData(newFilteredData);
     };
@@ -93,7 +96,7 @@ const SearchBar = ({ selectedCategory, onSelectCategory }) => {
                             <div className="search-results-header">
                                 <span>Found {filteredData.length} items</span>
                             </div>
-                            {filteredData.slice(0, 8).map(product => (
+                            {Array.isArray(filteredData) && filteredData.slice(0, 8).map(product => (
                                 <Link
                                     to={`/Detail/type/${product.type}/${product._id}`}
                                     key={product._id}

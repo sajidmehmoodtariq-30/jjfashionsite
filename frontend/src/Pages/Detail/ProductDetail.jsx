@@ -108,8 +108,13 @@ const ProductDetail = () => {
 
     }
     const getSimilarProducts = async () => {
-        const { data } = await axios.post(`${process.env.REACT_APP_PRODUCT_TYPE}`, { userType: cat })
-        setSimilarProduct(data)
+        try {
+            const { data } = await axios.post(`${process.env.REACT_APP_PRODUCT_TYPE}`, { userType: cat });
+            setSimilarProduct(Array.isArray(data) ? data : []);
+        } catch (error) {
+            console.log(error);
+            setSimilarProduct([]);
+        }
     }
     let data = [];
     if (cat === 'shoe') {
@@ -251,8 +256,9 @@ const ProductDetail = () => {
                 <Box>
                     <Box className='similarProduct' sx={{ display: 'flex', overflowX: 'auto', marginBottom: 10 }}>
                         {
-                            similarProduct.filter(prod => prod._id !== id).map(prod => (
-                                <Link to={`/Detail/type/${prod.type}/${prod._id}`} key={prod._id}>
+                            Array.isArray(similarProduct) &&
+                            similarProduct.filter(prod => prod && prod._id !== id).map(prod => (
+                                <Link to={`/Detail/type/${prod.type || cat}/${prod._id}`} key={prod._id}>
                                     <ProductCard prod={prod} />
                                 </Link>
                             ))

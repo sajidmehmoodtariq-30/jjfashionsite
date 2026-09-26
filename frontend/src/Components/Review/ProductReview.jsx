@@ -54,9 +54,14 @@ const ProductReview = ({ authToken, setProceed, setOpenAlert, id }) => {
         fetchReviews()
     }
     const fetchReviews = async () => {
-        const filter = filterOption.toLowerCase()
-        const { data } = await axios.post(`${process.env.REACT_APP_GET_REVIEW}/${id}`, { filterType: filter })
-        setReviews(data)
+        try {
+            const filter = filterOption.toLowerCase();
+            const { data } = await axios.post(`${process.env.REACT_APP_GET_REVIEW}/${id}`, { filterType: filter });
+            setReviews(Array.isArray(data) ? data : []);
+        } catch (error) {
+            console.log(error);
+            setReviews([]);
+        }
     }
     useEffect(() => {
         fetchReviews()
@@ -148,7 +153,7 @@ const ProductReview = ({ authToken, setProceed, setOpenAlert, id }) => {
                     <img src={customerReview} loading='lazy' alt="Customer Review" className='review-img' />
                 </div>
             </div>
-            {reviews.length >= 1 ? <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1, width: "80vw" }}>
+            {Array.isArray(reviews) && reviews.length >= 1 ? <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1, width: "80vw" }}>
                 <Button endIcon={<MdOutlineFilterAlt />}>Filters</Button>
                 <Select
                     labelId="demo-simple-select-label"
@@ -168,6 +173,7 @@ const ProductReview = ({ authToken, setProceed, setOpenAlert, id }) => {
             }
             <Box className='review-box' >
                 {
+                    Array.isArray(reviews) &&
                     reviews.map(review =>
                         <CommentCard userReview={review} key={review._id} authToken={authToken} setReviews={setReviews} reviews={reviews} fetchReviews={fetchReviews} />
                     )

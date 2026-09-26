@@ -50,21 +50,26 @@ const Cart = () => {
     }, [])
 
     useEffect(() => {
-        if (setProceed) {
-            setTotal(cart.reduce((acc, curr) => (acc + ((curr.productId?.price * curr.quantity) + shippingCoast)), 0))
+        if (setProceed && Array.isArray(cart)) {
+            setTotal(cart.reduce((acc, curr) => (acc + (((curr.productId?.price || 0) * curr.quantity) + shippingCoast)), 0))
         }
 
     }, [cart])
 
     const getCart = async () => {
         if (setProceed) {
-            const { data } = await axios.get(`${process.env.REACT_APP_GET_CART}`,
-                {
-                    headers: {
-                        'Authorization': authToken
-                    }
-                })
-            setCart(data);
+            try {
+                const { data } = await axios.get(`${process.env.REACT_APP_GET_CART}`,
+                    {
+                        headers: {
+                            'Authorization': authToken
+                        }
+                    })
+                setCart(Array.isArray(data) ? data : []);
+            } catch (err) {
+                console.log(err);
+                setCart([]);
+            }
         }
 
     }
@@ -76,13 +81,18 @@ const Cart = () => {
         navigate('/login')
     };
     const getPreviousOrder = async () => {
-        const { data } = await axios.get(`${process.env.REACT_APP_GET_PREVIOUS_ORDER}`,
-            {
-                headers: {
-                    'Authorization': authToken
-                }
-            })
-        setPreviousOrder(data)
+        try {
+            const { data } = await axios.get(`${process.env.REACT_APP_GET_PREVIOUS_ORDER}`,
+                {
+                    headers: {
+                        'Authorization': authToken
+                    }
+                })
+            setPreviousOrder(Array.isArray(data) ? data : [])
+        } catch (err) {
+            console.log(err);
+            setPreviousOrder([]);
+        }
     }
 
     const removeFromCart = async (product) => {
@@ -94,7 +104,7 @@ const Cart = () => {
                     }
                 })
                 toast.success("Removed From Cart", { autoClose: 500, theme: 'colored' })
-                setCart(cart.filter(c => c.productId._id !== product.productId._id))
+                setCart(Array.isArray(cart) ? cart.filter(c => c.productId._id !== product.productId._id) : [])
             } catch (error) {
                 toast.error("Something went wrong", { autoClose: 500, theme: 'colored' })
 
@@ -102,7 +112,7 @@ const Cart = () => {
         }
     }
     const proceedToCheckout = async () => {
-        if (cart.length <= 0) {
+        if (!Array.isArray(cart) || cart.length <= 0) {
             toast.error("Please add items in cart to proceed", { autoClose: 500, theme: 'colored' })
         }
         else {
@@ -119,7 +129,7 @@ const Cart = () => {
                 <Typography variant='h3' sx={{ textAlign: 'center', marginTop: 10, color: '#1976d2', fontWeight: 'bold' }}>Cart</Typography>
                 {
                     setProceed &&
-                    cart.length <= 0 &&
+                    (!Array.isArray(cart) || cart.length <= 0) &&
                     <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                         <div className="main-card">
                             <img src={EmptyCart} alt="Empty_cart" className="empty-cart-img" />
@@ -131,7 +141,7 @@ const Cart = () => {
                 <Container sx={{ display: 'flex', flexDirection: "column", mb: 10 }}>
                     <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap' }}>
                         {
-                            cart.length > 0 &&
+                            Array.isArray(cart) && cart.length > 0 &&
                             cart.map(product =>
                                 <CartCard product={product} removeFromCart={removeFromCart} key={product._id} />
 
@@ -139,7 +149,7 @@ const Cart = () => {
                     </Box>
 
                     {
-                        cart.length > 0 &&
+                        Array.isArray(cart) && cart.length > 0 &&
                         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                             <OrderSummary proceedToCheckout={proceedToCheckout} total={total} shippingCoast={shippingCoast} />
                         </Box>
@@ -147,11 +157,13 @@ const Cart = () => {
 
                 </Container>
             </Container>
-            {setProceed && previousOrder.length > 0 && <Typography variant='h6' sx={{ textAlign: 'center', margin: "5px 0" }}>Previous Orders</Typography>}
+            {setProceed && Array.isArray(previousOrder) && previousOrder.length > 0 && <Typography variant='h6' sx={{ textAlign: 'center', margin: "5px 0" }}>Previous Orders</Typography>}
             <Container maxWidth='xl' style={{ marginTop: 10, display: "flex", justifyContent: 'center', flexWrap: "wrap", paddingBottom: 20 }}>
                 {
+                    Array.isArray(previousOrder) &&
                     previousOrder.map(product => (
-                        product.productData.map(prod => <Link to={`/Detail/type/${prod.productId.type}/${prod.productId._id}`} key={prod._id}>
+                        Array.isArray(product.productData) &&
+                        product.productData.map(prod => <Link to={`/Detail/type/${prod.productId?.type}/${prod.productId?._id}`} key={prod._id}>
                             <ProductCard prod={prod.productId} />
                         </Link>
                         )

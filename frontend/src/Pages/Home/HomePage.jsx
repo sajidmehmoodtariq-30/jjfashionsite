@@ -61,17 +61,18 @@ const HomePage = () => {
                         'Authorization': authToken
                     }
                 });
-                setCart(data);
+                setCart(Array.isArray(data) ? data : []);
             } catch (err) {
                 console.log("Cart fetch error:", err);
             }
         }
     };
 
-    const activeCategoryList = categories.length > 0 ? categories : BannerData;
+    const activeCategoryList = Array.isArray(categories) && categories.length > 0 ? categories : BannerData;
 
     // Filter categories based on user quick-pills selection
-    const filteredCategories = activeCategoryList.filter(cat => {
+    const filteredCategories = Array.isArray(activeCategoryList) ? activeCategoryList.filter(cat => {
+        if (!cat) return false;
         if (selectedCategory === 'all') return true;
         const catType = (cat.type || cat.filter || '').toLowerCase();
         const catName = (cat.name || cat.subCategory || '').toLowerCase();
@@ -83,10 +84,10 @@ const HomePage = () => {
         if (selectedCategory === 'men-perfumes') return (catType === 'perfumes') && (catName.includes('men') || catAudience === 'men');
         if (selectedCategory === 'women-perfumes') return (catType === 'perfumes') && (catName.includes('women') || catAudience === 'women');
         return true;
-    });
+    }) : [];
 
     // Featured Products subset
-    const featuredProducts = allProducts.length > 0 ? allProducts.slice(0, 8) : [];
+    const featuredProducts = Array.isArray(allProducts) && allProducts.length > 0 ? allProducts.slice(0, 8) : [];
 
     return (
         <div className="homepage-container">
@@ -158,13 +159,13 @@ const HomePage = () => {
                 </div>
 
                 <div className="categories-grid">
-                    {filteredCategories.map((data, idx) => (
+                    {Array.isArray(filteredCategories) && filteredCategories.map((data, idx) => (
                         <CategoryCard data={data} key={data.subCategory + idx} />
                     ))}
                 </div>
 
                 {/* 5. Trending Showcase Section */}
-                {featuredProducts.length > 0 && (
+                {Array.isArray(featuredProducts) && featuredProducts.length > 0 && (
                     <>
                         <div className="section-header-box" style={{ marginTop: 90 }}>
                             <div className="section-tag" style={{ background: '#fef3c7', color: '#d97706' }}>

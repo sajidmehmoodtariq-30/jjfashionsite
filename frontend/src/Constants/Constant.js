@@ -3,24 +3,34 @@ import axios from "axios";
 import { forwardRef } from "react";
 const getCart = async (setProceed, setCart, authToken) => {
     if (setProceed) {
-        const { data } = await axios.get(`${process.env.REACT_APP_GET_CART}`,
-            {
-                headers: {
-                    'Authorization': authToken
-                }
-            })
-        setCart(data);
+        try {
+            const { data } = await axios.get(`${process.env.REACT_APP_GET_CART}`,
+                {
+                    headers: {
+                        'Authorization': authToken
+                    }
+                })
+            setCart(Array.isArray(data) ? data : []);
+        } catch (error) {
+            console.log(error);
+            setCart([]);
+        }
     }
 }
 const getWishList = async (setProceed, setWishlistData, authToken) => {
     if (setProceed) {
-        const { data } = await axios.get(`${process.env.REACT_APP_GET_WISHLIST}`,
-            {
-                headers: {
-                    'Authorization': authToken
-                }
-            })
-        setWishlistData(data)
+        try {
+            const { data } = await axios.get(`${process.env.REACT_APP_GET_WISHLIST}`,
+                {
+                    headers: {
+                        'Authorization': authToken
+                    }
+                })
+            setWishlistData(Array.isArray(data) ? data : []);
+        } catch (error) {
+            console.log(error);
+            setWishlistData([]);
+        }
     }
 }
 const handleLogOut = (setProceed, toast, navigate, setOpenAlert) => {
@@ -45,20 +55,23 @@ const handleClose = (setOpenAlert) => {
 const getAllProducts = async (setData) => {
     try {
         const { data } = await axios.get(process.env.REACT_APP_FETCH_PRODUCT);
-        setData(data)
-
-
+        setData(Array.isArray(data) ? data : []);
     } catch (error) {
         console.log(error);
+        setData([]);
     }
 }
 
 const getSingleProduct = async (setProduct, id, setLoading) => {
-
-    const { data } = await axios.get(`${process.env.REACT_APP_FETCH_PRODUCT}/${id}`)
-    setProduct(data)
-    setLoading(false);
-
+    try {
+        const { data } = await axios.get(`${process.env.REACT_APP_FETCH_PRODUCT}/${id}`);
+        setProduct(data && typeof data === 'object' ? data : {});
+    } catch (error) {
+        console.log(error);
+        setProduct({});
+    } finally {
+        if (setLoading) setLoading(false);
+    }
 }
 
 const Transition = forwardRef(function Transition(props, ref) {

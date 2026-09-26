@@ -32,20 +32,23 @@ const SingleCategory = () => {
         try {
             if (currentCat !== 'all' && process.env.REACT_APP_PRODUCT_TYPE) {
                 const { data } = await axios.post(`${process.env.REACT_APP_PRODUCT_TYPE}`, { userType: currentCat });
-                setProductData(data || []);
-                setAllFetchedProducts(data || []);
+                const list = Array.isArray(data) ? data : [];
+                setProductData(list);
+                setAllFetchedProducts(list);
             } else {
                 getAllProducts((data) => {
-                    setProductData(data || []);
-                    setAllFetchedProducts(data || []);
+                    const list = Array.isArray(data) ? data : [];
+                    setProductData(list);
+                    setAllFetchedProducts(list);
                 });
             }
         } catch (error) {
             console.log("Error fetching category products:", error);
             // Fallback to fetch all
             getAllProducts((data) => {
-                setProductData(data || []);
-                setAllFetchedProducts(data || []);
+                const list = Array.isArray(data) ? data : [];
+                setProductData(list);
+                setAllFetchedProducts(list);
             });
         } finally {
             setIsLoading(false);
@@ -74,15 +77,17 @@ const SingleCategory = () => {
         ];
 
     // Filter & Sort Logic
-    let displayedProducts = [...productData];
+    let displayedProducts = Array.isArray(productData) ? [...productData] : [];
 
     // 1. Subcategory / Audience filter
     if (selectedSubCat !== 'all') {
         displayedProducts = displayedProducts.filter(p =>
+            p && (
             (p.gender && p.gender.toLowerCase().includes(selectedSubCat)) ||
             (p.category && p.category.toLowerCase().includes(selectedSubCat)) ||
             (p.name && p.name.toLowerCase().includes(selectedSubCat)) ||
             (p.description && p.description.toLowerCase().includes(selectedSubCat))
+            )
         );
     }
 
@@ -229,7 +234,7 @@ const SingleCategory = () => {
                 ) : (
                     /* Products Grid */
                     <Container maxWidth="xl" style={{ display: "flex", justifyContent: "center", flexWrap: "wrap", gap: 20, paddingBottom: 40, width: '100%' }}>
-                        {displayedProducts.map(prod => (
+                        {Array.isArray(displayedProducts) && displayedProducts.map(prod => (
                             <Link to={`/Detail/type/${prod.type || currentCat}/${prod._id}`} key={prod._id} style={{ textDecoration: 'none' }}>
                                 <ProductCard prod={prod} />
                             </Link>

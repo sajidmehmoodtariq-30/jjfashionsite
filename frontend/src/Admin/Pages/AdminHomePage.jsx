@@ -32,7 +32,7 @@ const AdminHomePage = () => {
                     'Authorization': authToken
                 }
             });
-            setUser(data || []);
+            setUser(Array.isArray(data) ? data : []);
             setAdmin(true);
             setLoading(false);
         } catch (error) {

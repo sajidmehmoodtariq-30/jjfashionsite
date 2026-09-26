@@ -23,13 +23,18 @@ const Wishlist = () => {
     }, [])
     const getWishList = async () => {
         if (setProceed) {
-            const { data } = await axios.get(`${process.env.REACT_APP_GET_WISHLIST}`,
-                {
-                    headers: {
-                        'Authorization': authToken
-                    }
-                })
-            setWishlistData(data)
+            try {
+                const { data } = await axios.get(`${process.env.REACT_APP_GET_WISHLIST}`,
+                    {
+                        headers: {
+                            'Authorization': authToken
+                        }
+                    })
+                setWishlistData(Array.isArray(data) ? data : [])
+            } catch (err) {
+                console.log(err);
+                setWishlistData([]);
+            }
         }
         else {
             setOpenAlert(true)
@@ -43,7 +48,7 @@ const Wishlist = () => {
                         'Authorization': authToken
                     }
                 })
-                setWishlistData(wishlistData.filter(c => c.productId._id !== product.productId._id))
+                setWishlistData(Array.isArray(wishlistData) ? wishlistData.filter(c => c.productId._id !== product.productId._id) : [])
                 toast.success("Removed From Wishlist", { autoClose: 500, theme: 'colored' })
             } catch (error) {
                 toast.error(error, { autoClose: 500, theme: 'colored' })
@@ -63,7 +68,7 @@ const Wishlist = () => {
             <Typography variant='h3' sx={{ textAlign: 'center', margin: "10px 0 ", color: '#1976d2', fontWeight: 'bold' }}>Wishlist</Typography>
             {setProceed &&
 
-                wishlistData.length <= 0 ?
+                (!Array.isArray(wishlistData) || wishlistData.length <= 0) ?
                 (<Box sx={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                     <div className="main-card">
                         <img src={EmptyCart} alt="Empty_cart" className="empty-cart-img" />
@@ -71,7 +76,7 @@ const Wishlist = () => {
                     </div>
                 </Box>)
                 : (<Container maxWidth='xl' style={{ display: "flex", justifyContent: 'center', flexWrap: "wrap", paddingBottom: 20 }}>
-                    {wishlistData.map(product => (
+                    {Array.isArray(wishlistData) && wishlistData.map(product => (
                         <CartCard product={product} removeFromCart={removeFromWishlist} key={product._id} />
                     ))}
                 </Container>)
