@@ -18,21 +18,31 @@ router.post('/register', [
     body('lastName', 'Enter a valid name').isLength({ min: 1 }),
     body('email', 'Enter a valid email').isEmail(),
     body('password', 'Password must be at least 5 characters').isLength({ min: 5 }),
-    body('phoneNumber', 'Enter a valid phone number').isLength({ min: 10, max: 10 })
-
-
+    body('phoneNumber', 'Enter a valid phone number in format +92 XXXXXXXXXX').custom((value) => {
+        if (!value) return false;
+        const cleaned = value.toString().trim();
+        const regex = /^(\+92\s?\d{10}|03\d{9}|\d{10})$/;
+        return regex.test(cleaned);
+    })
 ], async (req, res) => {
-
-    res.c
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        
         return res.status(400).json({ error: errors.array() })
     }
-    const { firstName, lastName, email, phoneNumber, password,isAdmin } = req.body
+    const { firstName, lastName, email, phoneNumber, password, isAdmin } = req.body
+
+    // Normalize phone number to "+92 XXXXXXXXXX"
+    let formattedPhone = phoneNumber ? phoneNumber.toString().trim() : '';
+    if (formattedPhone.startsWith('03')) {
+        formattedPhone = '+92 ' + formattedPhone.slice(1);
+    } else if (formattedPhone.startsWith('+92') && !formattedPhone.startsWith('+92 ')) {
+        formattedPhone = '+92 ' + formattedPhone.slice(3);
+    } else if (/^\d{10}$/.test(formattedPhone)) {
+        formattedPhone = '+92 ' + formattedPhone;
+    }
 
     try {
-        let user = await User.findOne({ $or: [{ email: email }, { phoneNumber: phoneNumber }] });
+        let user = await User.findOne({ $or: [{ email: email }, { phoneNumber: formattedPhone }, { phoneNumber: phoneNumber }] });
         if (user) {
             return res.status(400).send({ error: "Sorry a user already exists" })
         }
@@ -46,7 +56,7 @@ router.post('/register', [
             firstName,
             lastName,
             email,
-            phoneNumber,
+            phoneNumber: formattedPhone,
             password: secPass,
             isAdmin
         })

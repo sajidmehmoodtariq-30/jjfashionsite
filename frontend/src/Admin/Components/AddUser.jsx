@@ -21,23 +21,33 @@ const AddUser = ({ getUser }) => {
     };
     const handleSubmit = async (e) => {
         e.preventDefault()
-        let phoneRegex = /^(?:(?:\+|0{0,2})91(\s*[\-]\s*)?|[0]?)?[789]\d{9}$/gm;
+        let phoneRegex = /^(\+92\s?\d{10}|03\d{9}|\d{10})$/;
         let emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+        let cleanPhone = (credentials.phoneNumber || '').toString().trim();
+        if (cleanPhone.startsWith('03')) {
+            cleanPhone = '+92 ' + cleanPhone.slice(1);
+        } else if (cleanPhone.startsWith('+92') && !cleanPhone.startsWith('+92 ')) {
+            cleanPhone = '+92 ' + cleanPhone.slice(3);
+        } else if (/^\d{10}$/.test(cleanPhone)) {
+            cleanPhone = '+92 ' + cleanPhone;
+        }
+
         try {
             if (!credentials.email && !credentials.firstName && !credentials.password && !credentials.phoneNumber && !credentials.lastName) {
                 toast.error("Please Fill the all Fields", { autoClose: 500, theme: 'colored' })
             }
-            else if (credentials.firstName.length <= 3 || credentials.lastName.length <= 3) {
-                toast.error("Please enter name with more than 3 characters", { autoClose: 500, theme: 'colored' })
+            else if (credentials.firstName.length <= 1 || credentials.lastName.length <= 1) {
+                toast.error("Please enter a valid name", { autoClose: 500, theme: 'colored' })
             }
             else if (!emailRegex.test(credentials.email)) {
                 toast.error("Please enter valid email", { autoClose: 500, theme: 'colored' })
             }
-            else if (!phoneRegex.test(credentials.phoneNumber)) {
-                toast.error("Please enter a valid phone number", { autoClose: 500, theme: 'colored' })
+            else if (!phoneRegex.test((credentials.phoneNumber || '').toString().trim())) {
+                toast.error("Please enter a valid phone number in format: +92 XXXXXXXXXX", { autoClose: 2000, theme: 'colored' })
             }
             else if (credentials.password.length < 5) {
-                toast.error("Please enter password with more than 5 characters", { autoClose: 500, theme: 'colored' })
+                toast.error("Please enter password with at least 5 characters", { autoClose: 500, theme: 'colored' })
             }
             else if (credentials.email && credentials.firstName && credentials.lastName && credentials.phoneNumber && credentials.password) {
                 const sendAuth = await axios.post(`${process.env.REACT_APP_REGISTER}`,
@@ -45,7 +55,7 @@ const AddUser = ({ getUser }) => {
                         firstName: credentials.firstName,
                         lastName: credentials.lastName,
                         email: credentials.email,
-                        phoneNumber: credentials.phoneNumber,
+                        phoneNumber: cleanPhone,
                         password: credentials.password,
                     })
                 const receive = await sendAuth.data
@@ -62,7 +72,7 @@ const AddUser = ({ getUser }) => {
                     })
                 }
                 else {
-                    toast.error("Some thing went wrong", { autoClose: 500, theme: 'colored' })
+                    toast.error("Something went wrong", { autoClose: 500, theme: 'colored' })
                 }
             }
         } catch (error) {
@@ -131,9 +141,11 @@ const AddUser = ({ getUser }) => {
                                     id="phoneNumber"
                                     label="Contact Number"
                                     name="phoneNumber"
+                                    placeholder="+92 3001234567"
+                                    helperText="Format: +92 XXXXXXXXXX (e.g. +92 3001234567)"
                                     value={credentials.phoneNumber}
                                     onChange={handleOnChange}
-                                    inputMode='numeric'
+                                    type="tel"
                                 />
                             </Grid>
                             <Grid item xs={12}>

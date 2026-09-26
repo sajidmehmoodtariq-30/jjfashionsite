@@ -67,12 +67,21 @@ const UpdateDetails = () => {
         setUserDetails({ ...userDetails, [e.target.name]: e.target.value })
     }
 
-    let phoneRegex = /^(?:(?:\+|0{0,2})91(\s*[\-]\s*)?|[0]?)?[789]\d{9}$/;
+    let phoneRegex = /^(\+92\s?\d{10}|03\d{9}|\d{10})$/;
     let emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     // let zipRegex = /^[1-9]{1}[0-9]{2}\\s{0, 1}[0-9]{3}$/;
 
     const handleSubmit = async (e) => {
         e.preventDefault()
+        let cleanPhone = (userDetails.phoneNumber || '').toString().trim();
+        if (cleanPhone.startsWith('03')) {
+            cleanPhone = '+92 ' + cleanPhone.slice(1);
+        } else if (cleanPhone.startsWith('+92') && !cleanPhone.startsWith('+92 ')) {
+            cleanPhone = '+92 ' + cleanPhone.slice(3);
+        } else if (/^\d{10}$/.test(cleanPhone)) {
+            cleanPhone = '+92 ' + cleanPhone;
+        }
+
         try {
             if (!userDetails.email && !userDetails.firstName && !userDetails.phoneNumber && !userDetails.lastName && !userDetails.address && !userDetails.city && !userDetails.userState && !userDetails.zipCode) {
                 toast.error("Please Fill the all Fields", { autoClose: 500, theme: 'colored' })
@@ -83,8 +92,8 @@ const UpdateDetails = () => {
             else if (!emailRegex.test(userDetails.email)) {
                 toast.error("Please enter valid email", { autoClose: 500, theme: 'colored' })
             }
-            else if (!phoneRegex.test(userDetails.phoneNumber)) {
-                toast.error("Please enter a valid phone number", { autoClose: 500, theme: 'colored' })
+            else if (!phoneRegex.test((userDetails.phoneNumber || '').toString().trim())) {
+                toast.error("Please enter a valid phone number in format: +92 XXXXXXXXXX", { autoClose: 2000, theme: 'colored' })
             }
             else if (!userDetails.address) {
                 toast.error("Please add address", { autoClose: 500, theme: 'colored' })
@@ -100,7 +109,7 @@ const UpdateDetails = () => {
             }
             else {
                 const { data } = await axios.put(`${process.env.REACT_APP_UPDATE_USER_DETAILS}`, {
-                    userDetails: JSON.stringify(userDetails)
+                    userDetails: JSON.stringify({ ...userDetails, phoneNumber: cleanPhone })
                 },
                     {
                         headers: {
@@ -183,7 +192,7 @@ const UpdateDetails = () => {
                             <TextField label="Last Name" name='lastName' value={userDetails.lastName || ''} onChange={handleOnchange} variant="outlined" fullWidth />
                         </Grid>
                         <Grid item xs={12} sm={6}>
-                            <TextField label="Contact Number" type='tel' name='phoneNumber' value={userDetails.phoneNumber || ''} onChange={handleOnchange} variant="outlined" fullWidth />
+                            <TextField label="Contact Number" type='tel' name='phoneNumber' placeholder="+92 3001234567" helperText="Format: +92 XXXXXXXXXX" value={userDetails.phoneNumber || ''} onChange={handleOnchange} variant="outlined" fullWidth />
                         </Grid>
                         <Grid item xs={12} sm={6}>
                             <TextField label="Email" name='email' value={userDetails.email || ''} onChange={handleOnchange} variant="outlined" fullWidth />
