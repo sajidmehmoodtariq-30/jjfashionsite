@@ -1,0 +1,27 @@
+@import './index.css';
+
+.margin {
+  margin-top: 80px;
+  width: 100%;
+  padding: 0;
+  min-height: calc(100vh - 80px);
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.toastContainerBox {
+  display: flex;
+  width: 340px;
+  z-index: 9999;
+  margin: 20px auto;
+}
+
+@media screen and (max-width: 960px) {
+  .margin {
+    margin-top: 64px;
+    margin-bottom: 70px;
+  }
+}

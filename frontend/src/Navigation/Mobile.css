@@ -1,0 +1,30 @@
+.showMobile {
+    display: none;
+}
+
+@media screen and (max-width: 900px) {
+    .showMobile {
+        display: block;
+        z-index: 9999;
+    }
+
+    .mobile-bottom-nav {
+        background: #0f172a !important;
+        border-top: 1px solid rgba(245, 158, 11, 0.3) !important;
+    }
+
+    .links {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 5px;
+        width: 60px;
+        color: #94a3b8;
+        transition: color 0.3s ease;
+    }
+
+    .links:hover, .active .links {
+        color: #f59e0b;
+    }
+}
