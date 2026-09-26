@@ -75,7 +75,7 @@ const MobileNavigation = () => {
                     <>
                         <NavLink to='/cart' style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                             <div className='links'>
-                                <Badge badgeContent={setProceed ? cart.length : 0} color="warning">
+                                <Badge badgeContent={setProceed && Array.isArray(cart) ? cart.length : 0} color="warning">
                                     <AiOutlineShoppingCart style={{ fontSize: 24 }} />
                                 </Badge>
                             </div>
@@ -83,7 +83,7 @@ const MobileNavigation = () => {
 
                         <NavLink to='/wishlist' style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                             <div className='links'>
-                                <Badge badgeContent={setProceed ? wishlistData.length : 0} color="error">
+                                <Badge badgeContent={setProceed && Array.isArray(wishlistData) ? wishlistData.length : 0} color="error">
                                     <AiOutlineHeart style={{ fontSize: 24 }} />
                                 </Badge>
                             </div>

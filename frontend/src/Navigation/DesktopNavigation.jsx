@@ -90,7 +90,7 @@ const DesktopNavigation = () => {
                     <NavLink to="/cart">
                       <span className='nav-icon-span'>
                         Cart
-                        <Badge badgeContent={setProceed ? cart.length : 0} color="warning">
+                        <Badge badgeContent={setProceed && Array.isArray(cart) ? cart.length : 0} color="warning">
                           <AiOutlineShoppingCart style={{ fontSize: 22 }} />
                         </Badge>
                       </span>
@@ -103,7 +103,7 @@ const DesktopNavigation = () => {
                     <NavLink to="/wishlist">
                       <span className='nav-icon-span'>
                         Wishlist
-                        <Badge badgeContent={setProceed ? wishlistData.length : 0} color="error">
+                        <Badge badgeContent={setProceed && Array.isArray(wishlistData) ? wishlistData.length : 0} color="error">
                           <AiOutlineHeart style={{ fontSize: 22 }} />
                         </Badge>
                       </span>

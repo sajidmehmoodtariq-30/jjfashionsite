@@ -21,10 +21,7 @@ import AdminRegister from './Admin/Auth/Register/AdminRegister';
 import AdminHomePage from './Admin/Pages/AdminHomePage';
 import SingleUserPage from './Admin/Pages/SingleUserPage';
 import SingleProduct from './Admin/Pages/SingleProduct';
-
-
-
-
+import ErrorBoundary from './Components/ErrorBoundary/ErrorBoundary';
 
 function App() {
   return (
@@ -33,7 +30,8 @@ function App() {
       <Router>
         <DesktopNavigation />
         <div className='margin'>
-          <Routes>
+          <ErrorBoundary>
+            <Routes>
             {/*User Routes  */}
             <Route path='/' index element={<HomePage />} />
             <Route path="/login" element={< Login />} />
@@ -56,6 +54,7 @@ function App() {
             <Route path='/admin/home/user/:id' element={<SingleUserPage />} />
             <Route path='/admin/home/product/:type/:id' element={<SingleProduct />} />
           </Routes>
+          </ErrorBoundary>
         </div>
         <MobileNavigation />
       </Router >
