@@ -38,6 +38,10 @@ app.use(express.static(path.join(__dirname, 'build')));
 
 app.use(checkOrigin);
 
+app.get('/', (req, res) => {
+    res.status(200).json({ success: true, message: 'JJ Fashion API is running' });
+});
+
 app.use('/api/auth', auth)
 
 app.use('/api/product', product)
